@@ -1,0 +1,4 @@
+{ 
+  "port": 82, 
+  "server": { "baseDir": "./public", "index": "index.html" } 
+}
