@@ -11,8 +11,12 @@ COPY . .
 
 RUN npm install
 RUN npm run dev
-RUN npm run start
 
-ENV NODE_ENV development
+FROM nginx:stable-alpine as production-stage
+
+COPY --from=build-stage /app/public /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 82
+
+CMD ["nginx", "-g", "daemon off"]
