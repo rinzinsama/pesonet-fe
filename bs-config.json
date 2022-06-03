@@ -1,4 +1,5 @@
-{ 
-  "port": 82, 
-  "server": { "baseDir": "./public", "index": "index.html" } 
+{
+    "port": 82,
+    "server": { "baseDir": "./public", "index": "index.html" },
+    "open": false
 }
