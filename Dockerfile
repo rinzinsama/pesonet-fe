@@ -16,5 +16,3 @@ RUN npm run start
 ENV NODE_ENV development
 
 EXPOSE 82
-
-CMD ["node", "./vuesrc/app.js"]
