@@ -1,4 +1,4 @@
-FROM node:16.15.0
+FROM node:16.15.0 as builder-stage
 # Create app directory
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN npm run dev
 
 FROM nginx:stable-alpine as production-stage
 
-COPY --from=node /app/ /usr/share/nginx/html
+COPY --from=builder-stage /app/* /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 82
