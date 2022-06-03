@@ -1,6 +1,7 @@
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 FROM node:16.15.0
 # Create app directory
-WORKDIR /app
+WORKDIR /Documents
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -9,7 +10,6 @@ COPY ./package*.json ./
 
 COPY . .
 
-RUN npm run dev
 
 ENV NODE_ENV development
 
