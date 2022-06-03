@@ -17,4 +17,4 @@ ENV NODE_ENV development
 
 EXPOSE 82
 
-CMD ["node", "./public/index.html"]
+CMD ["node", "./vuesrc/app.js"]
