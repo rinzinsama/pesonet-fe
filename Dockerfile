@@ -14,7 +14,7 @@ RUN npm run dev
 
 FROM nginx:stable-alpine as production-stage
 
-COPY --from=build-stage /app/public /usr/share/nginx/html
+COPY --from=node /app/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 82
