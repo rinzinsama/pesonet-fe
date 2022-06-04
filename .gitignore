@@ -1,0 +1,6 @@
+node_modules/
+public/
+.env
+bs-config.json
+package-lock.json
+Dockerfile
