@@ -98,6 +98,7 @@
           <tr>
             <th scope="col"><b>REFERENCE NUMBER</b></th>
             <th scope="col"><b>SEQUENCE NUMBER</b></th>
+            <th scope="col"><b>LOCAL EXTERNAL CODE</b></th>
             <th scope="col"><b>SETTLEMENT DATE</b></th>
             <th scope="col"><b>NO. OF TRANSACTIONS</b></th>
             <th scope="col"><b>TOTAL AMOUNT</b></th>
@@ -110,6 +111,7 @@
           <tr v-for="(batch, key) in batches" :key="key">
             <td>{{ batch.referenceId }}</td>
             <td v-html="nextLineParser(batch.sequenceNumber, ', ')"></td>
+             <td v-html="nextLineParser(batch.localExternalCode, ',')"></td>
             <td v-html="nextLineParser(batch.settlementDate, ' - ')"></td>
             <td>{{ batch.numberOfTransaction || "" }}</td>
             <td>{{ parseAmount(batch.totalAmount) || "" }}</td>
