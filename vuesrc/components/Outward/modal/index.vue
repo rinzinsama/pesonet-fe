@@ -788,6 +788,8 @@ export default {
       let payload = {
         referenceId: this.outwardReference.referenceId,
       };
+      // console.log("ditomuna")
+      // return
 
       this.$popover({
         icon: "far fa-question-circle",
@@ -806,7 +808,8 @@ export default {
 
               JCinstance.setContent("Processing....");
               JCinstance.setIcon("fas fa-circle-notch fa-pulse");
-
+              console.log(payload,"payload, index.vue")
+              // return
               vm.$store
                 .dispatch("outward/sendOutwardMessage", payload)
                 .then((res) => {

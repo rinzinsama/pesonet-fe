@@ -100,7 +100,7 @@
             :key="index"
           >
             <div
-              class="card-header  text-white"
+              class="card-header text-white"
               :class="validateObjectColor(transaction)"
               :id="`heading${index}`"
               data-toggle="collapse"
@@ -111,15 +111,24 @@
               <div class="row">
                 <div class="col">
                   <div
-                    class="dont-collapse custom-control custom-control-alternative custom-checkbox mr-4 same-line"
+                    class="
+                      dont-collapse
+                      custom-control custom-control-alternative custom-checkbox
+                      mr-4
+                      same-line
+                    "
                     v-if="
                       !transaction.sent &&
-                        outwardData.processing == 0 &&
-                        outwardData.status != 2
+                      outwardData.processing == 0 &&
+                      outwardData.status != 2
                     "
                   >
                     <input
-                      class="custom-control-input transaction-checkbox"
+                      :class="`custom-control-input transaction-checkbox transaction-checkbox-${
+                        hasDuplicateBool(transaction.ofiReferenceNumber, index)
+                          ? 'duplicate'
+                          : ''
+                      }`"
                       :id="`checkbox-${index}`"
                       type="checkbox"
                       :value="index"
@@ -736,6 +745,14 @@
       >
         <i class="fas fa-check-double"></i>
       </button>
+      <button
+        type="button"
+        class="btn btn-warning px-3"
+        v-if="!isFull"
+        @click.prevent="checkAllDups()"
+      >
+        <i class="fas fa-check-double"></i> CHECK ALL DUPLICATES
+      </button>
 
       <button
         type="button"
@@ -932,6 +949,16 @@ export default {
         })
         .filter((data) => data != undefined);
     },
+    checkAllDups() {
+      $(".transaction-checkbox-duplicate").prop("checked", true);
+
+      this.removeRack = this.transactions
+        .map((data, idx) => {
+          // console.log(data,"checkdatadups")
+          if (!data.sent && data.duplicates) return idx;
+        })
+        .filter((data) => data != undefined);
+    },
 
     removeAll() {
       $(".transaction-checkbox").prop("checked", false);
@@ -995,6 +1022,10 @@ export default {
           content.length > 0
             ? `${content}\n${sameTransDupeStrings.join("\n")}`
             : sameTransDupeStrings.join("\n");
+      }
+      if (dupe.length > 0 || sameTransDupe.length > 0) {
+        this.transactions[idx].duplicates = true;
+        // console.log("duplicates");
       }
 
       return content;
@@ -1100,6 +1131,7 @@ export default {
       this.bicOfBank = bicData || "";
       this.transactionsToday = transData || [];
       this.transactions = transactions ? transactions[0].data : [];
+
       this.isLoading = 0;
       this.initDependencies();
     },
@@ -1169,7 +1201,7 @@ export default {
         title: "REMOVE TRANSACTION",
         content,
         columnClass: "col-md-8",
-        onOpenBefore: function() {
+        onOpenBefore: function () {
           const containerSection = $(this.$content).find(
             ".transactions-popup-content"
           );
@@ -1371,7 +1403,7 @@ export default {
         content:
           vm.outwardData.isSent == 1 ? vm.notifTemplate : vm.submitTemplate(),
         columnClass: "col-md-8",
-        onOpenBefore: function() {
+        onOpenBefore: function () {
           const containerSection = $(this.$content).find(
             ".transactions-popup-content"
           );
@@ -1408,6 +1440,22 @@ export default {
               JCinstance.setContent("Processing....");
               JCinstance.setIcon("fas fa-circle-notch fa-pulse");
               console.log(payload);
+              let selectedDuplicates = [];
+              payload.forSubmission.map(async (x) => {
+                if (payload.transactions[x].duplicates) {
+                  await selectedDuplicates.push(x);
+                }
+              });
+              console.log(selectedDuplicates, "selectedDuplicates");
+              if (selectedDuplicates.length > 0) {
+                alert("Cant proceed ,please remove selected duplicate transaction.")
+                // };
+                return
+              }
+              // let checkDuplicates = payload.transactions.find(({ duplicates }) => duplicates === true)
+              //  let checkDuplicates = payload.transactions.find(({ duplicates }) => duplicates === true)
+              // console.log(checkDuplicates , "checkDuplicates")
+              // return;
               vm.$store
                 .dispatch("outward/sendOutwardMessage", payload)
                 .then((res) => {
@@ -1483,7 +1531,7 @@ export default {
         title: "REJECT",
         content: vm.rejectTemplate(),
         columnClass: "col-md-10",
-        onContentReady: function() {
+        onContentReady: function () {
           this.$content.find("textarea[name='reject_remarks']").focus();
         },
         buttons: {
@@ -1551,15 +1599,20 @@ export default {
         },
       });
     },
-    validateOutwardInitiate(){
+    validateOutwardInitiate() {
       const vm = this;
-      if(!vm.outwardData.processing && vm.outwardData.isSent && !vm.outwardData.status && vm.outwardData.remarks != 'validated'){
+      if (
+        !vm.outwardData.processing &&
+        vm.outwardData.isSent &&
+        !vm.outwardData.status &&
+        vm.outwardData.remarks != "validated"
+      ) {
         this.$popover({
           icon: "fas fa-circle-notch fa-pulse",
           title: "VALIDATE BATCH",
           content: "Validating batch since it was interrupted last time",
           columnClass: "col-md-10",
-          onContentReady: function() {
+          onContentReady: function () {
             let JCinstance = this;
 
             const payload = {
@@ -1607,7 +1660,7 @@ export default {
         title: "VALIDATE BATCH",
         content: "Validating...",
         columnClass: "col-md-10",
-        onContentReady: function() {
+        onContentReady: function () {
           let JCinstance = this;
 
           const payload = {

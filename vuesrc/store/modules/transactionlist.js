@@ -14,6 +14,7 @@ export default {
           payload
         )
       );
+      // console.log(data,"transactionList")
 
       return serialize(err?.response || data);
     },

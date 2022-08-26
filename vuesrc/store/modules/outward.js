@@ -120,6 +120,7 @@ export default {
           payload
         )
       );
+      console.log(data,"store validate")
 
       return serialize(err?.response || data);
     },
